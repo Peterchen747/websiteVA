@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>所有遊戲 - VA Games</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+            background-color: #fafafa;
+            color: #121212;
+        }
+        .header-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .game-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .game-card .card-front {
+            transition: all 0.4s ease;
+        }
+        .game-card .card-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .game-card:hover .card-front {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .game-card:hover .card-hover {
+            opacity: 1;
+            visibility: visible;
+        }
+        .badge-new {
+            background: linear-gradient(90deg, #FF7D00, #FFB800);
+        }
+        .badge-hot {
+            background: linear-gradient(90deg, #FF3D00, #FF8A00);
+        }
+    </style>
+</head>
+<body>
+    <header class="header-fixed py-3 px-6 md:px-12">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center">
+                <img src="va-logo.png" alt="VA Games Logo" class="h-10 w-auto">
+            </a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="games.html" class="text-purple-600 font-medium border-b-2 border-purple-600 pb-1">Games</a>
+                <a href="index.html#company" class="text-gray-800 hover:text-purple-600 transition-colors font-medium">Company</a>
+                <a href="index.html#contact" class="text-gray-800 hover:text-purple-600 transition-colors font-medium">Contact Us</a>
+            </nav>
+            <div class="flex items-center space-x-5">
+                <div class="relative hidden md:block">
+                    <input type="text" placeholder="搜尋遊戲..." class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-full text-sm w-48 focus:outline-none focus:border-purple-500">
+                    <i class="fa fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+                <button class="text-gray-800 hover:text-purple-600 transition-colors" aria-label="搜尋">
+                    <i class="fa fa-search text-lg"></i>
+                </button>
+                <div class="relative">
+                    <button class="flex items-center space-x-1 text-gray-800 hover:text-purple-600 transition-colors text-sm" id="langBtn">
+                        <i class="fa fa-globe"></i>
+                        <span>語言</span>
+                        <i class="fa fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-md py-2 hidden" id="langMenu">
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-50 hover:text-purple-600 text-sm">繁體中文</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-50 hover:text-purple-600 text-sm">English</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-50 hover:text-purple-600 text-sm">日本語</a>
+                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-purple-50 hover:text-purple-600 text-sm">한국어</a>
+                    </div>
+                </div>
+                <button class="md:hidden text-gray-800 hover:text-purple-600 transition-colors" id="mobileMenuBtn">
+                    <i class="fa fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="md:hidden mt-3 py-3 px-6 bg-white rounded-b-lg shadow-md hidden" id="mobileMenu">
+            <nav class="flex flex-col space-y-3">
+                <a href="games.html" class="text-purple-600 font-medium">Games</a>
+                <a href="index.html#company" class="text-gray-800 hover:text-purple-600 transition-colors">Company</a>
+                <a href="index.html#contact" class="text-gray-800 hover:text-purple-600 transition-colors">Contact Us</a>
+                <div class="relative mt-2">
+                    <input type="text" placeholder="搜尋遊戲..." class="bg-gray-100 text-gray-800 px-3 py-2 rounded-full text-sm w-full focus:outline-none focus:border-purple-500">
+                    <i class="fa fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <section class="py-8 px-6 md:px-12 bg-gradient-to-r from-purple-50 to-pink-50">
+            <div class="container mx-auto max-w-6xl">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">所有遊戲</h1>
+                <p class="text-gray-600 mt-2">探索我們豐富的遊戲庫，享受精彩體驗</p>
+            </div>
+        </section>
+
+        <!-- 過濾標籤：只保留3個 + 新增熱門標籤 -->
+        <section class="py-6 px-6 md:px-12 bg-white border-b border-gray-100">
+            <div class="container mx-auto max-w-6xl">
+                <div class="flex flex-wrap items-center gap-3 md:gap-6">
+                    <button class="px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-medium">全部遊戲</button>
+                    <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full text-sm font-medium transition-colors">老虎機</button>
+                    <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full text-sm font-medium transition-colors">捕魚機</button>
+                    <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full text-sm font-medium transition-colors">
+                        <i class="fa fa-fire text-red-500 mr-1"></i>熱門推薦
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 遊戲列表：所有卡片用同一張圖片 -->
+        <section class="py-10 px-6 md:px-12">
+            <div class="container mx-auto max-w-6xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- 遊戲1：蜜糖爆擊PLUS -->
+                    <div class="game-card bg-white" onclick="window.location.href='game1.html'">
+                        <div class="card-front">
+                            <div class="relative">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-48 object-cover">
+                                <span class="badge-new absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded-full">最新</span>
+                                <div class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                                    <img src="game-common.png" alt="小圖標" class="w-8 h-8 object-cover rounded-full">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1">蜜糖爆擊PLUS</h3>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-gamepad mr-1"></i>
+                                    <span>老虎機</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-hover p-4 bg-gradient-to-b from-purple-50 to-white">
+                            <div class="relative flex-grow">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-36 object-cover rounded-lg mb-3">
+                                <span class="badge-new absolute top-2 left-2 text-white text-xs font-bold px-2.5 py-1 rounded-full">最新</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1">蜜糖爆擊PLUS</h3>
+                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                                <i class="fa fa-gamepad mr-1"></i>
+                                <span>老虎機</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">返獎率 96.5%</span>
+                                <button class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-full transition-colors">
+                                    立即體驗
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 遊戲2：至尊王牌2 -->
+                    <div class="game-card bg-white" onclick="window.location.href='game2.html'">
+                        <div class="card-front">
+                            <div class="relative">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-48 object-cover">
+                                <span class="badge-hot absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded-full">熱門</span>
+                                <div class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                                    <img src="game-common.png" alt="小圖標" class="w-8 h-8 object-cover rounded-full">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1">至尊王牌2</h3>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-gamepad mr-1"></i>
+                                    <span>老虎機</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-hover p-4 bg-gradient-to-b from-purple-50 to-white">
+                            <div class="relative flex-grow">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-36 object-cover rounded-lg mb-3">
+                                <span class="badge-hot absolute top-2 left-2 text-white text-xs font-bold px-2.5 py-1 rounded-full">熱門</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1">至尊王牌2</h3>
+                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                                <i class="fa fa-gamepad mr-1"></i>
+                                <span>老虎機</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">返獎率 96.8%</span>
+                                <button class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-full transition-colors">
+                                    立即體驗
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 其餘遊戲卡片（重複結構，圖片統一用game-common.png） -->
+                    <div class="game-card bg-white" onclick="window.location.href='game3.html'">
+                        <div class="card-front">
+                            <div class="relative">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-48 object-cover">
+                                <span class="badge-new absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded-full">最新</span>
+                                <div class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                                    <img src="game-common.png" alt="小圖標" class="w-8 h-8 object-cover rounded-full">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1">特斯喵提款機</h3>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-gamepad mr-1"></i>
+                                    <span>老虎機</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-hover p-4 bg-gradient-to-b from-purple-50 to-white">
+                            <div class="relative flex-grow">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-36 object-cover rounded-lg mb-3">
+                                <span class="badge-new absolute top-2 left-2 text-white text-xs font-bold px-2.5 py-1 rounded-full">最新</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1">特斯喵提款機</h3>
+                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                                <i class="fa fa-gamepad mr-1"></i>
+                                <span>老虎機</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">返獎率 97.2%</span>
+                                <button class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-full transition-colors">
+                                    立即體驗
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-card bg-white" onclick="window.location.href='game4.html'">
+                        <div class="card-front">
+                            <div class="relative">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-48 object-cover">
+                                <span class="badge-hot absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded-full">熱門</span>
+                                <div class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                                    <img src="game-common.png" alt="小圖標" class="w-8 h-8 object-cover rounded-full">
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg text-gray-900 mb-1">霹靂財神+</h3>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-gamepad mr-1"></i>
+                                    <span>老虎機</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-hover p-4 bg-gradient-to-b from-purple-50 to-white">
+                            <div class="relative flex-grow">
+                                <img src="game-common.png" alt="遊戲圖片" class="w-full h-36 object-cover rounded-lg mb-3">
+                                <span class="badge-hot absolute top-2 left-2 text-white text-xs font-bold px-2.5 py-1 rounded-full">熱門</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1">霹靂財神+</h3>
+                            <div class="flex items-center text-sm text-gray-500 mb-3">
+                                <i class="fa fa-gamepad mr-1"></i>
+                                <span>老虎機</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">返獎率 96.7%</span>
+                                <button class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-full transition-colors">
+                                    立即體驗
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-10 space-x-2">
+                    <button class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-medium">1</button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 flex items-center justify-center font-medium transition-colors">2</button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 flex items-center justify-center font-medium transition-colors">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-10 px-6 md:px-12">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-shrink-0">
+                    <img src="va-logo.png" alt="VA Games Logo" class="h-12 w-auto mb-2">
+                    <p class="text-gray-400 text-sm text-center md:text-left">© 2025 VA Games. 保留所有權利</p>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-2">聯絡信箱</h4>
+                    <a href="mailto:contact@vagames.com" class="text-gray-300 hover:text-white transition-colors">
+                        contact@vagames.com
+                    </a>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="cert1.pdf" target="_blank" class="cert-item flex flex-col items-center">
+                        <img src="cert1.png" alt="遊戲分級認證" class="w-16 h-16 object-contain mb-1">
+                        <span class="text-gray-400 text-xs text-center">遊戲分級認證</span>
+                    </a>
+                    <a href="cert2.pdf" target="_blank" class="cert-item flex flex-col items-center">
+                        <img src="cert2.png" alt="數據安全認證" class="w-16 h-16 object-contain mb-1">
+                        <span class="text-gray-400 text-xs text-center">數據安全認證</span>
+                    </a>
+                    <a href="cert3.pdf" target="_blank" class="cert-item flex flex-col items-center">
+                        <img src="cert3.png" alt="版權保護認證" class="w-16 h-16 object-contain mb-1">
+                        <span class="text-gray-400 text-xs text-center">版權保護認證</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const langBtn = document.getElementById('langBtn');
+        const langMenu = document.getElementById('langMenu');
+        langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+        document.addEventListener('click', (e) => {
+            if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
+        });
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header-fixed');
+            if (window.scrollY > 30) {
+                header.classList.add('py-2', 'shadow-md');
+                header.classList.remove('py-3', 'shadow-sm');
+            } else {
+                header.classList.add('py-3', 'shadow-sm');
+                header.classList.remove('py-2', 'shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
